@@ -1,0 +1,82 @@
+<div class="container">
+
+    <app-navbar></app-navbar>
+
+
+    <div class="container">
+        <app-alert #alert style="margin:15px;"></app-alert>
+
+        <div class="row">
+            <div class="col-6">
+                <h3 style="margin-top: 20px;" class="text-primary">Create a Stage</h3>
+                <label>stages are made with tasks</label>
+                <form style="margin-top: 20px;">
+                    <div>
+                        <label>Stage Name</label>
+                        <input type="text" class="form-control" [formControl]="name" placeholder="Enter stage name">
+                        <small class="form-text text-muted">provide a name which is unique to your stage.</small>
+                    </div>
+
+                    <label style="margin-top: 20px;" *ngIf="(allTasks$|async).length>0">select tasks to be added to this
+                        stage</label>
+                    <div class="input-group mb-3" *ngIf="(allTasks$|async).length>0">
+                        <select class="custom-select" id="selectedTask" [formControl]="selectedTask">
+                            <option *ngFor="let task of (allTasks$ | async)" value="{{task._id}}">
+                                {{task.name}} = {{task.controllerName}} </option>
+                        </select>
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button" (click)="addTask()">add</button>
+                        </div>
+                    </div>
+
+                    <label class="primary" *ngIf="(selectedTasks$|async).length>0" style="margin-top: 20px;">selected
+                        tasks</label>
+                    <ul class="list-group" *ngIf="(selectedTasks$|async).length>0" style="margin-top: 10px;">
+                        <li class="list-group-item" *ngFor="let task of (selectedTasks$|async)">
+                            <label>{{task.name}} = {{task.controllerName}}</label>
+                        </li>
+                    </ul>
+
+                    <div class="form-check" style="margin-top: 20px;">
+                        <input class="form-check-input" type="checkbox" value="" [formControl]="canSkip">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Can User Skip this Stage
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" [formControl]="hostConsentToProceed">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Need Host consent to proceed
+                        </label>
+                    </div>
+
+                    <button style="margin-top: 10px;" type="submit" class="btn btn-primary"
+                        (click)="createStage()">Create</button>
+                </form>
+            </div>
+            <div class="col-6">
+                <h3 class="text-success" *ngIf="(allStages$ | async).length>0" style="margin-top: 20px;">all stages</h3>
+                <div *ngFor="let stage of (allStages$ | async)">
+                    <div class="card" style="width: 18rem;" style="margin: 20px;">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{stage.name}}</h5>
+                            <p class="card-text" *ngIf="stage._id">id: {{stage._id}}</p>
+                            <p class="card-text">user can skip: {{stage.canSkip}}</p>
+                            <p class="card-text">host consent to proceed: {{stage.hostConsentToProceed}}</p>
+                            <p class="card-text">created: {{stage.createdDate}}</p>
+                            <div *ngFor="let task of stage.tasks">
+                                <div class="card" style="width: 18rem;"
+                                    style="margin-left: 25px;margin-right: 25px;margin-top: 5px;margin-bottom: 15px;">
+                                    <div class="card-body">
+                                        <p class="card-text">task-id: <span class="text-primary">{{task}}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

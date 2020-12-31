@@ -1,0 +1,74 @@
+<div class="container">
+
+    <app-navbar></app-navbar>
+
+    <div class="container">
+        <app-alert #alert style="margin:15px;"></app-alert>
+
+        <div class="row">
+            <div class="col-5">
+                <h3 style="margin-top: 20px;" class="text-primary">Create a task</h3>
+                <form style="margin-top: 20px;">
+                    <div style="margin-top: 10px;">
+                        <label>Task Name</label>
+                        <input type="text" class="form-control" [formControl]="name" placeholder="Enter task name">
+                        <small class="form-text text-muted">provide a name which is unique to your task.</small>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label>Controller Name</label>
+                        <input type="text" class="form-control" [formControl]="controller_name"
+                            placeholder="Enter controller name">
+                        <small class="form-text text-muted">provide a controller name, the name of your conponent in
+                            customer app.</small>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label>Resource</label>
+                        <input type="text" class="form-control" placeholder="ex:www.example.com"
+                            [formControl]="resource">
+                        <small class="form-text text-muted">provide a resource to load with your task.</small>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <label>select user action</label>
+                        <select class="form-control" [formControl]="useraction">
+                            <option>ACCEPT_OR_DENY</option>
+                            <option>SUBMIT_CANCEL</option>
+                            <option>OK_CANCEL</option>
+                            <option>DISMISS</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <label>select type of user-input</label>
+                        <select class="form-control" [formControl]="userinput">
+                            <option>INPUT_SINGATURE</option>
+                            <option>INPUT_FORM</option>
+                            <option>INPUT_MIXED</option>
+                            <option>NONE</option>
+                        </select>
+                    </div>
+
+                    <button style="margin-top: 10px;" type="submit" class="btn btn-primary"
+                        (click)="taskSubmit()">Create</button>
+                </form>
+            </div>
+            <div class="col-7">
+                <h3 class="text-success" style="margin-top: 10px;" *ngIf="(allTasks$ | async).length>0">all tasks</h3>
+                <div *ngFor="let task of (allTasks$ | async)">
+                    <div class="card text-center" style="width: 18rem;" style="margin: 5px;">
+                        <div class="card-body">
+                            <h4 class="card-title text-primary">{{task.name}}</h4>
+                            <h6 class="card-title text-success">{{task.controllerName}}</h6>
+                            <p class="card-text text-info" *ngIf="task._id">id: {{task._id}}</p>
+                            <p class="card-text text-info" *ngIf="task.resource">resource: {{task.resource}}</p>
+                            <p class="card-text text-info" *ngIf="task.userAction">user-action: {{task.userAction}}</p>
+                            <p class="card-text text-info" *ngIf="task.userInput">userInput: {{task.userInput}}</p>
+
+                            <p class="card-text text-danger">created-on: {{task.createdDate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

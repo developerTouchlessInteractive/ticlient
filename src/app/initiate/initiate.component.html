@@ -1,0 +1,103 @@
+<ng-template #content let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Flow Complete</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>your customer has completed the flow.</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="goHome()">done</button>
+    </div>
+</ng-template>
+<div class="container">
+    <app-navbar></app-navbar>
+    <div class="p-3 mb-2 bg-info text-white rounded d-flex align-items-center" style="margin:15px;width:300px;"
+        *ngIf='inviteCode'>
+        <h6>Invite Code: {{inviteCode}}</h6>
+    </div>
+
+    <data-display #dataalert [data]="communicationdata" style="margin:15px;"></data-display>
+
+    <app-alert #alert style="margin:15px;"></app-alert>
+
+    <div class="input-group mb-3" *ngIf="!showFlowList">
+        <input type="text" class="form-control" placeholder="write message here for customer..."
+            aria-label="Recipient's username" aria-describedby="basic-addon2" [(ngModel)]="message">
+        <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2" (click)="sendMessage()">send</span>
+        </div>
+    </div>
+    <div class="row" *ngIf="flowInitiated">
+        <div class="col-6 d-flex align-items-center">
+            <div *ngIf="showFlowList">
+                <h3 class="text-success" style="margin-top: 20px;align-content: center;align-self: center;">All Flows
+                </h3>
+                <div *ngFor="let flow of (allflows$ | async)">
+                    <div class="card bg-light" style="margin: 10px;">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary"><span class="text-primary">{{flow.name}}</span></h5>
+                            <p class="card-text" *ngIf="flow._id">id: <span class="text-primary">{{flow._id}}</span></p>
+                            <p class="card-text">hostCanAbort: {{flow.hostCanAbort}}</p>
+                            <p class="card-text">created: {{flow.createdDate}}</p>
+                            <div *ngFor="let stage of flow.stages">
+                                <div class="card" style="width: 18rem;"
+                                    style="margin-left: 25px;margin-right: 25px;margin-top: 5px;margin-bottom: 15px;">
+                                    <div class="card-body">
+                                        <p class="card-text">stage-id: <span class="text-primary">{{stage}}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button style="margin-top: 10px;" type="submit" class="btn btn-primary"
+                                (click)="startFlow(flow._id)">Start
+                                Flow</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!showFlowList">
+                <h2 class="text-info" style="margin-top: 10px;align-content: center;align-self: center;">Flow Events
+                </h2>
+                <div *ngFor="let event of events">
+                    <div class="card bg-secondary text-white" style="margin: 10px;"
+                        *ngIf="event.type != 'SESSION_INFO'">
+                        <div class="card-body">
+                            <p class="card-text">{{getMomentTime(event.time)}}</p>
+                            <p class="card-text">{{getTaskName(event)}}</p>
+                            <p class="card-text">{{getEventType(event)}}</p>
+                            <p class="card-text">{{getTaskResource(event)}}</p>
+                        </div>
+                    </div>
+                    <div class="card bg-secondary text-white" style="margin: 10px;"
+                        *ngIf="event.type === 'SESSION_INFO'">
+                        <div class="card-body">
+                            <p class="card-text">{{getMomentTime(event.time)}}</p>
+                            <p class="card-text">received {{event.type}} from server and established flow session</p>
+                            <p class="card-text">{{event.data|json}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div *ngIf="commDatas.length>0">
+                <h2 class="text-info" style="margin-top: 20px;align-content: center;align-self: center;">Data Exchange
+                </h2>
+                <div *ngFor="let data of commDatas">
+                    <div class="card bg-info text-white" style="margin: 10px;">
+                        <div class="card-body">
+                            <p class="card-text">packetId: {{data.packetId}}</p>
+                            <p class="card-text">time: {{getMomentTime(data.time)}}</p>
+                            <p class="card-text">type: {{getDataType(data.type)}}</p>
+                            <p class="card-text" *ngIf="data.data">data: {{data.data}}</p>
+                            <p class="card-text" *ngIf="data.route.source">source: {{data.route.source}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
