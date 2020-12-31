@@ -1,0 +1,73 @@
+<div class="container">
+    <app-navbar></app-navbar>
+
+    <div class="container">
+        <app-alert #alert style="margin:15px;"></app-alert>
+
+        <div class="row">
+            <div class="col-6">
+                <h3 style="margin-top: 20px;" class="text-primary">Create a Flow</h3>
+                <label>Flows are made with tasks</label>
+                <form style="margin-top: 20px;">
+                    <div>
+                        <label>Flow Name</label>
+                        <input type="text" class="form-control" [formControl]="name" placeholder="Enter flow name">
+                        <small class="form-text text-muted">provide a name which is unique to your flow.</small>
+                    </div>
+
+                    <label style="margin-top: 20px;" *ngIf="(allstages$|async).length>0">select stages</label>
+                    <div class="input-group mb-3" *ngIf="(allstages$|async).length>0">
+                        <select class="custom-select" id="selectedStage" [formControl]="selectedStage">
+                            <option *ngFor="let stage of (allstages$ | async)" value="{{stage._id}}">{{stage.name}}
+                            </option>
+                        </select>
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button" (click)="addStage()">add</button>
+                        </div>
+                    </div>
+
+                    <label class="primary" *ngIf="(selectedStages$ | async).length>0" style="margin-top: 20px;">selected
+                        stages</label>
+                    <ul class="list-group" *ngIf="(selectedStages$ | async).length>0" style="margin-top: 10px;">
+                        <li class="list-group-item" *ngFor="let stage of (selectedStages$ | async)">
+                            <label>{{stage.name}}</label>
+                        </li>
+                    </ul>
+
+                    <div class="form-check" style="margin-top: 20px;">
+                        <input class="form-check-input" type="checkbox" value="" [formControl]="hostCanAbort">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Allow Host to Abort Flow in case
+                        </label>
+                    </div>
+
+                    <button style="margin-top: 10px;" type="submit" class="btn btn-primary"
+                        (click)="createFlow()">Create</button>
+                </form>
+            </div>
+            <div class="col-6">
+                <h3 class="text-success" *ngIf="(allflows$ | async).length>0"
+                    style="margin-top: 20px;align-content: center;">all flows</h3>
+                <div *ngFor="let flow of (allflows$ | async)">
+                    <div class="card" style="width: 18rem;" style="margin: 20px;">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{flow.name}}</h5>
+                            <p class="card-text" *ngIf="flow._id">id: {{flow._id}}</p>
+                            <p class="card-text">hostCanAbort: {{flow.hostCanAbort}}</p>
+                            <p class="card-text">created: {{flow.createdDate}}</p>
+                        </div>
+                        <div *ngFor="let stage of flow.stages">
+                            <div class="card" style="width: 18rem;"
+                                style="margin-left: 25px;margin-right: 25px;margin-top: 5px;margin-bottom: 15px;">
+                                <div class="card-body">
+                                    <p class="card-text">stage-id: <span class="text-primary">{{stage}}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
